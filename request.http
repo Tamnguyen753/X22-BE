@@ -1,0 +1,24 @@
+//registerStaff
+###
+POST http://localhost:3000/api/staff/registerStaff
+Content-Type: application/json
+
+{
+    "name": "Hang",
+    "address": "Nguyen xa - Bac Tu Liem - Ha Noi",
+    "dateOfBirth": "04/06/2004",
+    "staffCode": "2022602431",
+    "username": "lazyGirl",
+    "password": "Hang040602@",
+    "type":"manager"
+}
+
+###
+//registerRestaurant
+POST  http://localhost:3000/api/restaurants/registerRestaurant
+Content-Type: application/json
+
+{
+    "username": "NhaHangThuHang",
+    "password": "Hang1234@",
+}
