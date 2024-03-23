@@ -1,9 +1,9 @@
 const express = require('express');
-const { StaffRoute } = require('./routes/staff');
-const { RestaurantRoute } = require('./routes/Restaurant');
-const { restaurantRoute } = require('./routes/restaurantAccount');
-const { connectDB } = require('./config/db');
-const { authRouter } = require('./routes/authRoute');
+const { StaffRoute } = require('./src/routes/staff');
+const { RestaurantRoute } = require('./src/routes/Restaurant');
+const { restaurantRoute } = require('./src/routes/restaurantAccount');
+const { connectDB } = require('./src/config/db');
+const { authRouter } = require('./src/routes/authRoute');
 const cors = require('cors')
 const app = express()
 app.use(cors())
