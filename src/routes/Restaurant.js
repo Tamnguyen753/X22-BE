@@ -7,17 +7,17 @@ const RestaurantRoute = express.Router();
 // const {checkTokenAndType} = require('../middleware/CheckTokenAndType');
 
 const {verifyTokenRestaurant} = require("../middleware/restaurant");
-const {CreateRestaurant, UpdateRestaurant, DeleteRestaurant} = require('../controler/restaurantInfo');
+const {CreateRestaurant, UpdateRestaurant, DeleteRestaurant, GetRestaurant} = require('../controler/restaurantInfo');
 const upload = require("../middleware/uploadImage");
 
 RestaurantRoute.use(verifyTokenRestaurant);
 
 RestaurantRoute.post("/", upload.single("image"), CreateRestaurant);
 
-// RestaurantRoute.post("/", verifyTokenRestaurant, CreateRestaurant);
-
 RestaurantRoute.put('/:id', verifyTokenRestaurant, UpdateRestaurant);
 
 RestaurantRoute.delete('/:id', verifyTokenRestaurant, DeleteRestaurant);
+
+RestaurantRoute.get("/:id", GetRestaurant);
 
 module.exports = {RestaurantRoute};

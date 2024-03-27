@@ -15,11 +15,11 @@ const CreateRestaurant = async (req, res, next) => {
     // res.json("ok");
 
     try{
-        const manager = req.restaurantAccounts;
+        const manager = req.body;
         
-        // if(!manager){
-        //     return res.status(401).json({success: false, message: "unauthorized"});
-        // }
+        if(!manager){
+            return res.status(401).json({success: false, message: "unauthorized"});
+        }
         
         const newRestaurant = new restaurantModel({
             manager: manager,
@@ -45,11 +45,11 @@ const CreateRestaurant = async (req, res, next) => {
 
 const UpdateRestaurant = async (req, res) => {
 
-    const {name, address, describe, image} = req.body;
+    const {name, address, describe, image, rate} = req.body;
 
-    if(!name || !address || !describe || !image) {
-        return res.status(400).json({success: false, message: "infomation is required!"});
-    }
+    // if(!name || !address || !describe || !image) {
+    //     return res.status(400).json({success: false, message: "infomation is required!"});
+    // }
 
     try {
         let updatedRestaurant = {
@@ -57,14 +57,11 @@ const UpdateRestaurant = async (req, res) => {
             address,
             describe,
             image,
+            rate,
         }
-        // const RestaurantUpdateCondition = {_id: req.params.id};
 
-        // if(!RestaurantUpdateCondition){
-        //     return res.status(401).json({success: false, message: "update failed!"});
-        // }
-
-        const existingRestaurant = await restaurantModel.findById(req.params.id);
+        const existingRestaurant = await restaurantModel.findById({_id: req.params.id});
+        
         if(!existingRestaurant){
             return res.status(404).json({success: false, message: "restaurant not found"});
         }
@@ -94,4 +91,18 @@ const DeleteRestaurant = async(req, res) => {
         res.status(500).json({success: false, message: "internal server!"});
     }
 }
-module.exports = {CreateRestaurant, UpdateRestaurant, DeleteRestaurant};
+
+const GetRestaurant = async (req, res, next) => {
+    try{
+        const restaurantId =  req.params.id;
+        const restaurant = await restaurantModel.findOne({_id: restaurantId});
+        if(!restaurant){
+            return res.status(404).json({success: false, message: "restaurant not found"});
+        }
+        res.json(restaurant);
+    }catch(err){
+        next(err);
+    }
+};
+
+module.exports = {CreateRestaurant, UpdateRestaurant, DeleteRestaurant, GetRestaurant};
