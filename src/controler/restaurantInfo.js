@@ -1,9 +1,10 @@
 const restaurantModel =  require("../models/restaurant");
 
-const CreateRestaurant = async (req, res, next) => {
-    const file = req.file;
-        if(!file){
-            return res.status(400).json({success: false, message: "file is required!"});
+const CreateRestaurant = async (req, res) => {
+    const files = req.files;
+
+        if(!files || files.length === 0){
+            return res.status(400).json({success: false, message: "Chua co anh nao duoc tai len!"});
         }
 
     const { name, address, describe} = req.body;
@@ -12,23 +13,20 @@ const CreateRestaurant = async (req, res, next) => {
         return res.status(400).json({success: false, message: "infomation is required!"});
     }
 
-    // res.json("ok");
-
     try{
-        const manager = req.body;
-        
-        if(!manager){
-            return res.status(401).json({success: false, message: "unauthorized"});
-        }
-        
+        const images = files.map(file => `posts/${file.filename}`);
+
         const newRestaurant = new restaurantModel({
-            manager: manager,
+            managerId: req.staffId,
             name,
             address,
             describe,
-            image: `posts/${file.filename}`,
+            // images: `posts/${file.filename}`,
+            images: images,
             rate: 0,
-            createdAt: new Date()
+            createdAt: new Date(),
+            viewCount: 0,
+            rateCount: 0,
         });
 
         await newRestaurant.save();
@@ -45,18 +43,14 @@ const CreateRestaurant = async (req, res, next) => {
 
 const UpdateRestaurant = async (req, res) => {
 
-    const {name, address, describe, image, rate} = req.body;
-
-    // if(!name || !address || !describe || !image) {
-    //     return res.status(400).json({success: false, message: "infomation is required!"});
-    // }
+    const {name, address, describe, images, rate} = req.body;
 
     try {
         let updatedRestaurant = {
             name,
             address,
             describe,
-            image,
+            images,
             rate,
         }
 

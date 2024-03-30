@@ -1,10 +1,11 @@
 const {Schema, default: mongoose} = require('mongoose');
-const {restaurantAccountSchema} = require("./restaurantAccount");
 
 const restaurantSchema = new Schema({
-    manager: {
-        type: restaurantAccountSchema,
+    managerId: {
+        type: [mongoose.Schema.Types.ObjectId],
+        ref: "staff",
     },
+
     name: {
         type: String,
     },
@@ -12,12 +13,14 @@ const restaurantSchema = new Schema({
         type: String,
     },
     describe: String,
-    image: Array,
+    images: Array,
     rate: Number,
     createdAt: {
         type: Date,
         default: Date.now
-    }
+    },
+    viewCount : Number,
+    rateCount: Number,
 })
 const restaurantModel = mongoose.model("restaurants", restaurantSchema)
 module.exports = restaurantModel;

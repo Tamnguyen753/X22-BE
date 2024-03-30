@@ -1,6 +1,7 @@
 const {Schema, default: mongoose} = require('mongoose');
 const staffSchema = new mongoose.Schema({
     name: String,
+    email: String,
     address: String,
     dateOfBirth: Date,
     staffCode: String,
