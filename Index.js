@@ -1,18 +1,18 @@
 const express = require("express");
 const { StaffRoute } = require("./src/routes/staff");
 const { RestaurantRoute } = require("./src/routes/Restaurant");
-const { restaurantRoute } = require("./src/routes/restaurantAccount");
-const { connectDB } = require("./src/config/db");
 const { authRouter } = require("./src/routes/authRoute");
-const cors = require("cors");
 const userRouter = require("./src/routes/user-route");
+
+const { connectDB } = require("./src/config/db");
+const cors = require("cors");
 const app = express();
+
 app.use(cors());
 app.use(express.json());
 app.use("/api", authRouter);
 app.use("/api/user", userRouter);
 app.use("/api/staff", StaffRoute); //dk staff
-app.use("/api/restaurants", restaurantRoute); //dk restaurant
 app.use("/api/restaurants/info", RestaurantRoute); //CRUD restaurant
 
 app.get("/", (req, res) => {
