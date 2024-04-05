@@ -3,13 +3,13 @@ const restaurantModel =  require("../models/restaurant");
 const CreateRestaurant = async (req, res) => {
     const file = req.file;
         if(!file){
-            return res.status(400).json({success: false, message: "file is required!"});
+            return res.status(400).json({success: false, message: "Chưa có ảnh nào được tải lên!"});
         }
 
     const {name, address, describe, image} = req.body;
 
     if(!name || !address || !describe || !image) {
-        return res.status(400).json({success: false, message: "infomation is required!"});
+        return res.status(400).json({success: false, message: "Bạn chưa điền đủ thông tin!"});
     }
 
     try{
@@ -17,18 +17,20 @@ const CreateRestaurant = async (req, res) => {
             name,
             address,
             describe,
-            image: `posts/${file.filename}`,
-            rate,
-            createdAt
+            image: image,
+            rate: 0,
+            createdAt: new Date(),
+            viewCount: 0,
+            rateCount: 0,
         });
 
         await newRestaurant.save();
 
-        res.json({success: true, message:"created restaurent successfully!"});
+        res.json({success: true, message:"Tạo mới nhà hàng thành công!"});
 
     }catch(error){
         console.log(error);
-        res.status(500).json({success: false, message: "internal server!"});
+        res.status(500).json({success: false, message: "Lỗi hệ thống!"});
     }
 };
 
@@ -37,25 +39,29 @@ const UpdateRestaurant = async (req, res) => {
     const {name, address, describe, image} = req.body;
 
     if(!name || !address || !describe || !image) {
-        return res.status(400).json({success: false, message: "infomation is required!"});
+        return res.status(404).json({success: false, message: "Nhà hàng không tồn tại!"});
     }
 
+    
     try {
+        const existingRestaurant = await restaurantModel.findById({_id: req.params.id});
+        if(!existingRestaurant){
+            return res.status(404).json({success: false, message: "Nhà hàng không tồn tại!"});
+        }
+
         let updatedRestaurant = {
             name,
             address,
             describe,
             image
         }
-        const RestaurantUpdateCondition = {_id: req.params.id};
 
-        if(!RestaurantUpdateCondition){
-            return res.status(401).json({success: false, message: "update failed!"});
-        }
-        res.json({success: true, message: "update successfully!", restaurant: updatedRestaurant});
+        await restaurantModel.updateOne({_id: req.params.id}, updatedRestaurant);
+        
+        res.json({success: true, message: "Cập nhật thành công!", restaurant: updatedRestaurant});
     } catch (error) {
         console.log(error);
-        res.status(500).json({success: false, message: "internal server!"});
+        res.status(500).json({success: false, message: "Lỗi hệ thống!"});
     }
 };
 
@@ -66,13 +72,27 @@ const DeleteRestaurant = async(req, res) => {
         const deleteRestaurant = await restaurantModel.findOneAndDelete(RestaurantDeleteCondition);
 
         if(!deleteRestaurant){
-            return res.status(401).json({success:false, message: "restaurant not found!"});
+            return res.status(404).json({success:false, message: "Nhà hàng không tồn tại!"});
         }
 
-        res.json({success: true, message: "deleted successfully!", restaurant: deleteRestaurant});
+        res.json({success: true, message: "Xoá thành công", restaurant: deleteRestaurant});
     }catch(error){
         console.log(error);
-        res.status(500).json({success: false, message: "internal server!"});
+        res.status(500).json({success: false, message: "Lỗi hệ thống!"});
     }
 }
-module.exports = {CreateRestaurant, UpdateRestaurant, DeleteRestaurant};
+
+const GetRestaurant = async (req, res, next) => {
+    try{
+        const restaurantId =  req.params.id;
+        const restaurant = await restaurantModel.findOne({_id: restaurantId});
+        if(!restaurant){
+            return res.status(404).json({success: false, message: "Nhà hàng không tồn tại!"});
+        }
+        res.json(restaurant);
+    }catch(err){
+        next(err);
+    }
+};
+
+module.exports = {CreateRestaurant, UpdateRestaurant, DeleteRestaurant, GetRestaurant};

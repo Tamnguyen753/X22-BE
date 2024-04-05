@@ -1,10 +1,8 @@
 const checkManagerType = (req, res, next) => {
-    const {type} = req.body.type;
-
-    if(type === 'manager'){
+    if(req.staffType === 'manager'){
         next();
     }else{
-        res.status(403).json({error: "you don't have create Restaurant!"});
+        res.status(403).json({error: "Bạn không phải là quản lý của nhà hàng!"});
     }
 }
 module.exports = {checkManagerType};
