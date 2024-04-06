@@ -1,30 +1,31 @@
+require('dotenv').config()
 const express = require("express");
-const { StaffRoute } = require("./src/routes/staff");
-const { RestaurantRoute } = require("./src/routes/Restaurant");
-const { authRouter } = require("./src/routes/authRoute");
-const userRouter = require("./src/routes/user-route");
+const cors = require("cors");
 
 const { connectDB } = require("./src/config/db");
-const cors = require("cors");
 const app = express();
+
+const { authRoute } = require("./src/routes/auth.route");
+const { restaurantRoute } = require("./src/routes/restaurant.route");
+const { staffRoute } = require("./src/routes/staff.route");
 
 app.use(cors());
 app.use(express.json());
-app.use("/api", authRouter);
-app.use("/api/user", userRouter);
-app.use("/api/staff", StaffRoute); //dk staff
-app.use("/api/restaurants/info", RestaurantRoute); //CRUD restaurant
+app.use("/api/auth", authRoute);
+app.use("/api/restaurant", restaurantRoute); //CRUD restaurant
+app.use("/api/staff", staffRoute); //dk staff
 
 app.get("/", (req, res) => {
   res.send({
-    mesasag: "Thành công !",
+    mesasage: "Thành công !",
   });
 });
+
 connectDB()
   .then((res) => {
     console.log(res);
-    app.listen(3000, () => {
-      console.log("server chạy thành công !!");
+    app.listen(9000, () => {
+      console.log("server chạy thành công!!");
     });
   })
   .catch((err) => {
