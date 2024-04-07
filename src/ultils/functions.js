@@ -1,3 +1,5 @@
+const mongodb = require('mongodb');
+
 const nodemailer = require("nodemailer");
 
 const transporter = nodemailer.createTransport({
@@ -31,5 +33,9 @@ const verifyToken = (token) => {
         return null;
     }
 };
+
+const isValidObjectId = (id) => {
+    return mongodb.ObjectId.isValid(id);
+}
 
 module.exports = { transporter, sendEmail, verifyToken }

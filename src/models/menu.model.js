@@ -1,4 +1,4 @@
-const {Schema, default: mongoose} = require('mongoose');
+const { Schema, default: mongoose } = require('mongoose');
 const menuSchema = new mongoose.Schema({
     name: String,
     type: {
@@ -8,12 +8,14 @@ const menuSchema = new mongoose.Schema({
     },
     price: Number,
     unit: String,
+    describe: String,
     restaurantId: {
-        type: [mongoose.Schema.Types.ObjectId],
+        type: mongoose.Schema.Types.ObjectId,
         ref: "restaurants",
         require: true,
     },
-    discount: Number
+    discount: Number,
+    image: String
 })
 const menuModel = mongoose.model("menu", menuSchema)
-module.exports = {menuModel};
+module.exports = { menuModel };

@@ -6,7 +6,7 @@ const staffSchema = new mongoose.Schema({
     dateOfBirth: Date,
     staffCode: String,
     restaurantId: {
-        type: [mongoose.Schema.Types.ObjectId],
+        type: mongoose.Schema.Types.ObjectId,
         ref: "restaurants",
         require: true
     },
