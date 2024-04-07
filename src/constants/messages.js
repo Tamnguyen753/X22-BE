@@ -8,7 +8,9 @@ const messages = {
     resetPasswordSuccessfully: "Mật khẩu đã được thiết lập lại",
     usernameHasBeenTaken: "Tên đăng nhập đã có người sử dụng",
     emailHasBeenTaken: "Email đã có người sử dụng",
-    registerSuccessfully: "Đăng ký tài khoản thành công"
+    registerSuccessfully: "Đăng ký tài khoản thành công",
+    success: "Thành công",
+    restaurantNotFound: "Không tìm thấy nhà hàng"
 };
 
 module.exports = { messages };
