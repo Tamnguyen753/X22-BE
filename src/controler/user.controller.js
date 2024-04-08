@@ -97,22 +97,14 @@ const login = async (req, res, next) => {
 const forgetPassword = async (req, res, next) => {
   try {
     const username = req.body.username?.trim();
-    const email = req.body.email?.trim();
-    const findUser = await userModel.findOne({ username });
-    if (!username || !email) {
-      return res
-        .status(400)
-        .send({ message: "Tên đăng nhập và email là bắt buộc" });
+    if (!username) {
+      return res.status(400).send({ message: "Tên đăng nhập là bắt buộc" });
     }
 
-    if (!!findUser) {
+    const findUser = await userModel.findOne({ username });
+    if (!findUser) {
       return res.status(404).send({
-        message: { username, email },
-      });
-    }
-    if (findUser && findUser.email !== email) {
-      return res.status(200).send({
-        message: "Email của bạn không khớp",
+        message: `${username} không tồn tại`,
       });
     }
     const resetToken = getToken({ email: findUser.email });
