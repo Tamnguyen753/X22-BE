@@ -10,6 +10,8 @@ const { restaurantRoute } = require("./src/routes/restaurant.route");
 const { staffRoute } = require("./src/routes/staff.route");
 const { menuRoute } = require('./src/routes/menu.route');
 const { reservationRoute } = require('./src/routes/reservation.route');
+const { commonRoute } = require('./src/routes/common.route');
+const { initFirebase } = require('./src/config/firebase.config');
 
 app.use(cors());
 app.use(express.json());
@@ -18,7 +20,8 @@ app.use("/api/restaurant", restaurantRoute); //CRUD restaurant
 app.use("/api/menu", menuRoute);
 app.use("/api/staff", staffRoute); //dk staff
 app.use("/api/reservation", reservationRoute);
-
+app.use("/api/common", commonRoute);
+initFirebase()
 app.get("/", (req, res) => {
   res.send({
     mesasage: "Thành công !",
