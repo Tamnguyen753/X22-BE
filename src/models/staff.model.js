@@ -1,4 +1,4 @@
-const {Schema, default: mongoose} = require('mongoose');
+const { Schema, default: mongoose } = require('mongoose');
 const staffSchema = new mongoose.Schema({
     name: String,
     email: String,
@@ -6,7 +6,7 @@ const staffSchema = new mongoose.Schema({
     dateOfBirth: Date,
     staffCode: String,
     restaurantId: {
-        type: [mongoose.Schema.Types.ObjectId],
+        type: mongoose.Schema.Types.ObjectId,
         ref: "restaurants",
         require: true
     },
@@ -19,4 +19,4 @@ const staffSchema = new mongoose.Schema({
     },
 })
 const staffModel = mongoose.model("staff", staffSchema)
-module.exports = {staffModel};
+module.exports = { staffModel };

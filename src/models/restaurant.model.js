@@ -1,8 +1,8 @@
-const {Schema, default: mongoose} = require('mongoose');
+const { Schema, default: mongoose } = require('mongoose');
 
 const restaurantSchema = new mongoose.Schema({
     managerId: {
-        type: [mongoose.Schema.Types.ObjectId],
+        type: mongoose.Schema.Types.ObjectId,
         ref: "staff",
     },
     name: {
@@ -15,13 +15,15 @@ const restaurantSchema = new mongoose.Schema({
     },
     describe: String,
     image: Array,
-    rate: Number,
+    avgRate: Number,
     createdAt: {
         type: Date,
         default: Date.now
     },
-    viewCount : Number,
+    viewCount: Number,
     rateCount: Number,
+    openTime: String,
+    closeTime: String
 })
 const restaurantModel = mongoose.model("restaurants", restaurantSchema)
-module.exports = {restaurantModel};
+module.exports = { restaurantModel };

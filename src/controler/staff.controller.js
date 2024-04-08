@@ -1,5 +1,5 @@
 const bcrypt = require("bcrypt");
-const { staffModel } = require("../models/staff");
+const { staffModel } = require("../models/staff.model");
 const jwt = require("jsonwebtoken");
 
 const Register = async (req, res) => {
@@ -30,7 +30,6 @@ const Register = async (req, res) => {
     });
     await newStaff.save();
 
-    const ACCESS_TOKEN_SECRET = "akjfksbmdvskmfbkswuigsc";
     const accessToken = jwt.sign(
       { staffId: newStaff._id, type: newStaff.type },
       ACCESS_TOKEN_SECRET
@@ -80,7 +79,12 @@ const Login = async (req, res) => {
       ACCESS_TOKEN_SECRET
     );
 
-    res.json({ success: true, message: "Đăng nhập thành công!", accessToken });
+    res.json({
+      success: true,
+      message: "Đăng nhập thành công!",
+      accessToken,
+      staff,
+    });
   } catch (error) {
     console.log(error);
     res.status(500).json({ success: false, message: "Lỗi hệ thống!" });
@@ -99,15 +103,26 @@ const GetStaff = async (req, res) => {
     res.status(500).json({ success: false, message: "interal server!" });
   }
 };
-const getAllStaffInRestaurant = async (req, res) => {
-  const { restaurantId } = req.query;
-
+const GetAllStaff = async (req, res) => {
+  const restaurantId = req.body.restaurantId;
+  if (!restaurantId) {
+    return res
+      .status(400)
+      .json({ success: false, message: "Vui lòng cung cấp restaurantId!" });
+  }
   try {
-    const documents = await YourModel.find({ restaurantId });
-    return documents;
+    const listStaff = await staffModel
+      .find({ restaurantId: restaurantId })
+      .select("-password");
+    if (!listStaff || listStaff.length === 0) {
+      return res
+        .status(404)
+        .json({ success: false, message: "Không tìm thấy nhân viên!" });
+    }
+    res.json({ success: true, listStaff });
   } catch (error) {
     console.log(error);
-    res.status(500).json({ success: false, message: "interal server!" });
+    res.status(500).json({ success: false, message: "Lỗi server nội bộ!" });
   }
 };
 
@@ -161,10 +176,4 @@ const CreateStaffAccount = async (req, res) => {
     res.status(500).json({ success: false, message: "Lỗi hệ thống!" });
   }
 };
-module.exports = {
-  Register,
-  Login,
-  GetStaff,
-  CreateStaffAccount,
-  getAllStaffInRestaurant,
-};
+module.exports = { Register, Login, GetStaff, CreateStaffAccount, GetAllStaff };

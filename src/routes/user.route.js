@@ -8,9 +8,9 @@ const {
 
 const userRouter = Router();
 
-userRouter.post("/register", register);
-userRouter.post("/login", login);
-userRouter.get("/forgetpassword", forgetPassword);
-userRouter.put("/resetpassword", resetPassword);
+// userRouter.post("/register", register);
+// userRouter.post("/login", login);
+// userRouter.get("/forgetpassword", forgetPassword);
+// userRouter.put("/resetpassword", resetPassword);
 
 module.exports = userRouter;
