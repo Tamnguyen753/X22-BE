@@ -1,4 +1,5 @@
 const mongodb = require('mongodb');
+const mongoose = require('mongoose');
 
 const nodemailer = require("nodemailer");
 
@@ -38,4 +39,9 @@ const isValidObjectId = (id) => {
     return mongodb.ObjectId.isValid(id);
 }
 
-module.exports = { transporter, sendEmail, verifyToken }
+const randomString = () => {
+    const id = new mongoose.Types.ObjectId();
+    return id.toString();
+}
+
+module.exports = { transporter, sendEmail, verifyToken, randomString }
