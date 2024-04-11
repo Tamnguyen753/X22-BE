@@ -10,7 +10,11 @@ const messages = {
     emailHasBeenTaken: "Email đã có người sử dụng",
     registerSuccessfully: "Đăng ký tài khoản thành công",
     success: "Thành công",
-    restaurantNotFound: "Không tìm thấy nhà hàng"
+    restaurantNotFound: "Không tìm thấy nhà hàng",
+    reservationNotFound: "Không tìm thấy yêu cầu đặt bàn",
+    failReservation: "Bàn đã được đặt trước đó",
+    AvaiableCheckin: "Đặt bàn đã được check-in trước đó."
+
 };
 
 module.exports = { messages };

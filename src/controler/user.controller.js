@@ -1,8 +1,10 @@
-const userModel = require("../models/user.js");
+
 const nodemailer = require("nodemailer");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const { getToken } = require("../ultils/token.js");
+const { userModel } = require("../models/user.model.js");
+const commentModel = require("../models/comment.model.js");
 
 const register = async (req, res, next) => {
   try {
@@ -176,4 +178,24 @@ const resetPassword = async (req, res, next) => {
   }
 };
 
-module.exports = { register, login, forgetPassword, resetPassword };
+let comments = [];
+const postComment = async (req, res) => {
+  const { restaurantId, userID, comment, rating } = req.body;
+  try {
+    const newComment = await commentModel.create({ restaurantId, userID, comment, rating });
+    comments.push(newComment);
+    res.status(201).json(newComment)
+  } catch (error) {
+    res.status(500).json({ message: error.message })
+  }
+}
+const getCommentByRestaurantId = async (req, res) => {
+  try {
+    const { restaurantId } = req.params
+    const comments = await commentModel.find({ restaurantId })
+    res.json(comments)
+  } catch (error) {
+    res.status(500).json({ error })
+  }
+}
+module.exports = { register, login, forgetPassword, resetPassword, postComment, getCommentByRestaurantId };

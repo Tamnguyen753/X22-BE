@@ -12,6 +12,7 @@ const { menuRoute } = require('./src/routes/menu.route');
 const { reservationRoute } = require('./src/routes/reservation.route');
 const { commonRoute } = require('./src/routes/common.route');
 const { initFirebase } = require('./src/config/firebase.config');
+const tableRoute = require('./src/routes/table.route');
 
 app.use(cors());
 app.use(express.json());
@@ -21,6 +22,7 @@ app.use("/api/menu", menuRoute);
 app.use("/api/staff", staffRoute); //dk staff
 app.use("/api/reservation", reservationRoute);
 app.use("/api/common", commonRoute);
+app.use("/api/table", tableRoute);
 initFirebase()
 app.get("/", (req, res) => {
   res.send({
