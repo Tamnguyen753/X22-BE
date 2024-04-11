@@ -5,6 +5,7 @@ const {
   login,
   register,
 } = require("../controler/user-controller");
+const { postComment, getCommentByRestaurantId } = require("../controler/user.controller");
 
 const userRouter = Router();
 
@@ -12,5 +13,8 @@ const userRouter = Router();
 // userRouter.post("/login", login);
 // userRouter.get("/forgetpassword", forgetPassword);
 // userRouter.put("/resetpassword", resetPassword);
+
+
+
 
 module.exports = userRouter;

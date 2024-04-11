@@ -1,4 +1,4 @@
-const {Schema, default: mongoose} = require('mongoose');
+const { Schema, default: mongoose } = require('mongoose');
 const tableSchema = new mongoose.Schema({
     no: Number,
     status: {
@@ -7,10 +7,10 @@ const tableSchema = new mongoose.Schema({
         default: 'free'
     },
     restaurantId: {
-        type: [mongoose.Schema.Types.ObjectId],
+        type: mongoose.Schema.Types.ObjectId,
         ref: "restaurants",
         require: true
     }
 })
 const tableModel = mongoose.model("tables", tableSchema)
-module.exports = {tableModel};
+module.exports = { tableModel };

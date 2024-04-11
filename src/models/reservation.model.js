@@ -1,7 +1,7 @@
 const { Schema, default: mongoose } = require('mongoose');
 const reservationSchema = new mongoose.Schema({
     userId: {
-        type: [mongoose.Schema.Types.ObjectId],
+        type: mongoose.Schema.Types.ObjectId,
         ref: "users",
     },
     name: String,
@@ -21,7 +21,7 @@ const reservationSchema = new mongoose.Schema({
     restaurantId: {
         type: mongoose.Schema.Types.ObjectId,
         ref: "restaurants",
-        require: true,
+        require: true
     },
     tables: [
         {
