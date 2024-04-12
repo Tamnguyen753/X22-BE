@@ -73,10 +73,9 @@ const Login = async (req, res) => {
             });
         }
 
-        const ACCESS_TOKEN_SECRET = "akjfksbmdvskmfbkswuigsc";
         const accessToken = jwt.sign(
             { staffId: staff._id, type: staff.type },
-            ACCESS_TOKEN_SECRET
+            process.env.JWT_SECRET
         );
 
         res.json({
@@ -160,10 +159,9 @@ const createStaffAccount = async (req, res) => {
 
         await newStaff.save();
 
-        const ACCESS_TOKEN_SECRET = "akjfksbmdvskmfbkswuigsc";
         const accessToken = jwt.sign(
             { staffId: newStaff._id, type: "staff" },
-            ACCESS_TOKEN_SECRET
+            process.env.JWT_SECRET
         );
 
         res.json({
