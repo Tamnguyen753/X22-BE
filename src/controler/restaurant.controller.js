@@ -67,27 +67,28 @@ const getRestaurant = async (req, res) => {
 }
 
 const createRestaurant = async (req, res) => {
-    const files = req.files;
-    if (!files) {
-        return res.status(400).json({ success: false, message: "Chưa có ảnh nào được tải lên!" });
-    }
+    // const files = req.files;
+    // if (!files) {
+    //     return res.status(400).json({ success: false, message: "Chưa có ảnh nào được tải lên!" });
+    // }
 
-    const { name, address, describe} = req.body;
+    // console.log(files);
 
-    console.log(files);
+    const { name, address, describe, image} = req.body;
+
     if (!name || !address || !describe || !image || image.length == 0) {
         return res.status(400).json({ success: false, message: "Bạn chưa điền đủ thông tin!" });
     }
 
     try {
-        const images = files.map(file =>`https://firebasestorage.googleapis.com/v0/b/restaurant-ae24e.appspot.com/o/${file}?alt=media`);
+        // const images = files.map(file =>`https://firebasestorage.googleapis.com/v0/b/restaurant-ae24e.appspot.com/o/${file}?alt=media`);
         // console.log(images);
 
         const newRestaurant = new restaurantModel({
             name,
             address,
             describe,
-            image: images,
+            image: image,
             rate: 0,
             createdAt: new Date(),
             viewCount: 0,
