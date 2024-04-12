@@ -1,13 +1,14 @@
 const jwt = require('jsonwebtoken');
 const { messages } = require('../constants/messages');
 const { loginType } = require('../constants/loginType');
+const { staffModel } = require('../models/staff.model');
 
 const verifyToken = (req, res, next) => {
     const authHeader = req.header('Authorization');
     const token = authHeader && authHeader.split(' ')[1];
 
     if (!token) {
-        return res.status(401).json({ success: false, message: messages.invalidData });
+        return res.status(401).json({ success: false, message: messages.unauthenticated });
     }
 
     try {
@@ -18,18 +19,28 @@ const verifyToken = (req, res, next) => {
         next();
     } catch (error) {
         console.log(error);
-        return res.status(403).json({ success: false, message: messages.invalidData });
+        return res.status(403).json({ success: false, message: messages.unauthenticated });
     }
 };
 
-const verifyManager = (req, res, next) => {
-    if (req.type == "manager" && req.loginTypeValue == loginType.staffLogin) next();
-    else return res.status(403).json({ success: false, message: messages.invalidData });
+const verifyManager = async (req, res, next) => {
+    if (req.type == "manager" && req.loginTypeValue == loginType.staffLogin) {
+        // lấy thông tin nhân viên đăng nhập
+        const staff = await staffModel.findById(req.id);
+        req.staff = staff;
+        next();
+    }
+    else return res.status(403).json({ success: false, message: messages.mustBeManager });
 };
 
-const verifyStaff = () => {
-    if (req.loginTypeValue == loginType.staffLogin) next();
-    else return res.status(403).json({ success: false, message: messages.invalidData });
+const verifyStaff = async (req, res, next) => {
+    if (req.loginTypeValue == loginType.staffLogin) {
+        // lấy thông tin nhân viên đăng nhập
+        const staff = await staffModel.findById(req.id);
+        req.staff = staff;
+        next();
+    }
+    else return res.status(403).json({ success: false, message: messages.mustBeStaff });
 };
 
 module.exports = { verifyToken, verifyManager, verifyStaff };

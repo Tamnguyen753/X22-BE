@@ -63,16 +63,14 @@ const userGetReservations = async (req, res) => {
 }
 
 // nhân viên lấy danh sách yêu cầu đặt bàn
+//api này đang có lỗi
 const staffGetReservations = async (req, res) => {
     try {
-        const restaurantId = req.params.id;
-        console.log(restaurantId);
-        if (!isValidObjectId(restaurantId))
-            return res.status(400).json({
-                success: false,
-                message: messages.invalidData
-            });
-        const reservations = await reservationModel.findById(restaurantId)
+        console.log(req.staff);
+        const restaurantId = req.staff.restaurantId.toString();
+        const reservations = await reservationModel.find({
+            restaurantId
+        })
         console.log(reservations);
         console.log(typeof restaurantId);
         if (!reservations)
