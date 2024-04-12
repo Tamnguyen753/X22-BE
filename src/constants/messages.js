@@ -13,8 +13,10 @@ const messages = {
     restaurantNotFound: "Không tìm thấy nhà hàng",
     reservationNotFound: "Không tìm thấy yêu cầu đặt bàn",
     failReservation: "Bàn đã được đặt trước đó",
-    AvaiableCheckin: "Đặt bàn đã được check-in trước đó."
-
+    AvaiableCheckin: "Đặt bàn đã được check-in trước đó.",
+    unauthenticated: "Bạn cần đăng nhập tài khoản để thực hiện chức năng này",
+    mustBeStaff: "Bạn phải là nhân viên nhà hàng để thực hiện chức năng này",
+    mustBeManager: "Bạn phải là quản lý nhà hàng để thực hiện chức năng này",
 };
 
 module.exports = { messages };

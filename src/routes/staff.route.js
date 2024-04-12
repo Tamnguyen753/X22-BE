@@ -25,4 +25,6 @@ staffRoute.post("/", verifyToken, verifyManager, createStaffAccount);
 // quản lý nhà hàng cập nhật tài khoản nhân viên
 staffRoute.put("/:id", verifyToken, verifyManager, createStaffAccount);
 
+
+
 module.exports = { staffRoute };
