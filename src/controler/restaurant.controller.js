@@ -4,7 +4,7 @@ const { restaurantModel } = require("../models/restaurant.model");
 const { staffModel } = require("../models/staff.model");
 
 const getRestaurants = async (req, res) => {
-    let keyword = req.query.keyword?.trim();
+    let keyword = req.query.keyword?.trim().toUpperCase();
     let page = Number(req.query?.page) ?? 1;
     let pageSize = Number(req.query?.pageSize) ?? 15;
 
