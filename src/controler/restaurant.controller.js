@@ -1,6 +1,7 @@
 const { isValidObjectId } = require("mongoose");
 const { messages } = require("../constants/messages");
 const { restaurantModel } = require("../models/restaurant.model");
+const { staffModel } = require("../models/staff.model");
 
 const getRestaurants = async (req, res) => {
     let keyword = req.query.keyword?.trim();
@@ -67,23 +68,18 @@ const getRestaurant = async (req, res) => {
 }
 
 const createRestaurant = async (req, res) => {
-    // const files = req.files;
-    // if (!files) {
-    //     return res.status(400).json({ success: false, message: "Chưa có ảnh nào được tải lên!" });
-    // }
-
-    // console.log(files);
-
     const { name, address, describe, image} = req.body;
 
     if (!name || !address || !describe || !image || image.length == 0) {
-        return res.status(400).json({ success: false, message: "Bạn chưa điền đủ thông tin!" });
+        return res.status(400).json({ success: false, message: messages.invalidData });
     }
 
     try {
-        // const images = files.map(file =>`https://firebasestorage.googleapis.com/v0/b/restaurant-ae24e.appspot.com/o/${file}?alt=media`);
-        // console.log(images);
-
+        const staff = req.staff;
+        // kiểm tra xem quản lý đã tạo nhà hàng chưa
+        if (staff.restaurantId) return res.status(400).json({success: false, message: messages.managerAlreadyHasRestaurant});
+        
+        // tạo nhà hàng mới
         const newRestaurant = new restaurantModel({
             name,
             address,
@@ -97,11 +93,15 @@ const createRestaurant = async (req, res) => {
 
         await newRestaurant.save();
 
-        res.json({ success: true, message: "Tạo mới nhà hàng thành công!" });
+        // gắn id của nhà hàng mới vào quản lý
+        const staffId = staff._id;
+        await staffModel.findByIdAndUpdate(staffId, {restaurantId: newRestaurant._id});
+
+        return res.json({ success: true, message: "Tạo mới nhà hàng thành công!" });
 
     } catch (error) {
         console.log(error);
-        res.status(500).json({ success: false, message: "Lỗi hệ thống!" });
+        return res.status(500).json({ success: false, message: messages.serverError});
     }
 };
 
