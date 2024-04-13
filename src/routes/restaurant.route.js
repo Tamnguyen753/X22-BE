@@ -11,6 +11,9 @@ restaurantRoute.post("/", verifyToken, verifyManager, createRestaurant);
 // quản lý nhà hàng cập nhật thông tin nhà hàng
 restaurantRoute.put('/:id', verifyToken, verifyManager, updateRestaurant);
 
+//lấy danh sach nhà hàng theo tên nhà hàng
+// restaurantRoute.get("/getRestaurants", getRestaurantByName)
+
 // lấy danh sách nhà hàng
 restaurantRoute.get("/", getRestaurants);
 
