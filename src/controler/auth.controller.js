@@ -38,7 +38,62 @@ const { restaurantModel } = require("../models/restaurant.model");
 //         })
 //     }
 // }
-
+const register = async (req, res, next) => {
+    try {
+      const username = req.body.username?.trim();
+      const password = req.body.password?.trim();
+      const firstName = req.body.firstName?.trim();
+      const lastName = req.body.lastName?.trim();
+      const email = req.body.email?.trim();
+      const phone = req.body.phone?.trim();
+      const salt = bcrypt.genSaltSync();
+      const error = {};
+      if (!username) {
+        error.username = "Tài khoản bắt buộc nhập";
+      } else {
+        const currentUser = await userModel.findOne({ username });
+        if (!!currentUser) {
+          error.username = "Tài khoản đã tồn tại";
+        }
+      }
+      if (!password) {
+        error.password = "Mật khẩu bắt buộc nhập";
+      }
+      if (!firstName) {
+        error.firstName = "Họ bắt buộc nhập";
+      }
+      if (!lastName) {
+        error.lastName = "Tên bắt buộc nhập";
+      }
+      if (!email) {
+        error.email = "Email bắt buộc nhập";
+      }
+      if (!phone) {
+        error.phone = "Số điện thoại bắt buộc nhập";
+      }
+      if (Object.keys(error).length > 0) {
+        res.status(400).send(error);
+        return;
+      }
+      const hashedPassword = bcrypt.hashSync(password, salt);
+      const newUser = await userModel.create({
+        username,
+        password: hashedPassword,
+        firstName,
+        lastName,
+        email,
+        phone,
+      });
+      res.status(201).send({
+        message: "Đăng ký thành công",
+        data: newUser,
+      });
+    } catch (error) {
+      res.status(403).send({
+        message: error.message,
+      });
+    }
+  };
 
 const login = async (req, res) => {
     const { username, password, loginTypeValue } = req.body;
@@ -94,17 +149,17 @@ const login = async (req, res) => {
 const forgetPassword = async (req, res) => {
     try {
         const username = req.body.username?.trim();
-        const email = req.body.email?.trim();
-        const findUser = await userModel.findOne({ username, email });
-        if (!username || !email) {
+        // const email = req.body.email?.trim();
+        const findUser = await userModel.findOne({ username });
+        if (!username) {
             return res.status(400).send({ message: messages.invalidData });
         }
 
-        if (findUser && findUser.email !== email) {
-            return res.status(200).send({
-                message: messages.notFoundUsernameAndEmail,
-            });
-        }
+        // if (findUser && findUser.email !== email) {
+        //     return res.status(200).send({
+        //         message: messages.notFoundUsernameAndEmail,
+        //     });
+        // }
         const resetToken = getToken({ email: findUser.email });
         const message1 = `${process.env.DOMAIN_WEB}/resetpassword?token=${resetToken}`;
         await sendEmail(findUser.email, "lấy lại mật khẩu", message1);
@@ -227,5 +282,6 @@ module.exports = {
     resetPassword,
     profile,
     managerRegister,
-    customerRegister
+    customerRegister,
+    register
 };

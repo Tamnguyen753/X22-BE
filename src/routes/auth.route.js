@@ -1,11 +1,14 @@
 const { Router } = require("express");
-const { login, forgetPassword, resetPassword, profile, managerRegister, customerRegister } = require("../controler/auth.controller");
+const { login, forgetPassword, resetPassword, profile, managerRegister, customerRegister, register } = require("../controler/auth.controller");
 const { verifyToken } = require("../middleware/auth.middleware");
 const { postComment, getCommentByRestaurantId } = require("../controler/user.controller");
 
 const authRoute = Router();
 // authRoute.get("/getRestaurant", getRestaurant)
-// authRoute.get("/getRestaurant/:id", getRestaurantById)
+// authRoute.get("/getRestaurant/:id", getRestaurantById)\
+
+// người dùng đăng ki
+authRoute.post("/register", register);
 
 // người dùng đăng nhập
 authRoute.post("/login", login);
