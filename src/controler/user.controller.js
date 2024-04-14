@@ -110,7 +110,7 @@ const forgetPassword = async (req, res, next) => {
       });
     }
     const resetToken = getToken({ email: findUser.email });
-    const message1 = `http://localhost:3001/resetpassword?token=${resetToken}`;
+    const message1 = `${process.env.DOMAIN_WEB}/resetpassword?token=${resetToken}`;
     await sendEmail(findUser.email, "lấy lại mật khẩu", message1);
     return res.status(200).send({
       message: "Hãy kiểm tra email của bạn",
