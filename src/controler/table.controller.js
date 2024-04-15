@@ -15,4 +15,19 @@ const createTable = async (req, res) => {
         res.status(500).json({ message: messages.serverError })
     }
 }
-module.exports = { createTable };
+const getTable = async (req, res) => {
+    const { restaurantId } = req.query;
+
+
+    try {
+        // Tìm danh sách bàn ăn dựa trên restaurantId
+        const tables = await tableModel.find({ restaurantId });
+
+        // Trả về danh sách bàn ăn
+        res.status(200).json({ success: true, data: tables });
+    } catch (error) {
+        console.error('Đã xảy ra lỗi khi lấy danh sách bàn ăn:', error);
+        res.status(500).json({ success: false, message: 'Đã xảy ra lỗi khi lấy danh sách bàn ăn' });
+    }
+}
+module.exports = { createTable, getTable };
