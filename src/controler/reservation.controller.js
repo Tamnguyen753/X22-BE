@@ -32,6 +32,43 @@ const userCreateReservation = async (req, res) => {
     });
   }
 };
+const getAcceptReservation1 = async (req, res) => {
+  try {
+    const restaurantId = req.staff.restaurantId.toString();
+    const reservations = await reservationModel.find({
+      restaurantId,
+    });
+
+    if (reservations.length === 0) {
+      return res.status(404).json({
+        success: false,
+        message: "không có đơn hàng nào",
+      });
+    }
+
+    const acceptReservation = reservations.filter((item) => {
+      return item.status === "accepted" || item.status === "checkIn" || item.status === "checkOut";
+    });
+
+    if (acceptReservation.length === 0) {
+      return res.status(404).json({
+        success: false,
+        message: "không có đơn hàng nào chờ checkIn/checkout",
+      });
+    }
+
+    return res.status(200).json({
+      success: true,
+      messages: "lấy thông tin thành công",
+      data: acceptReservation,
+    });
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      message: "Lỗi máy chủ",
+    });
+  }
+};
 
 // khách hàng lấy danh sách yêu cầu đặt bàn
 const userGetReservations = async (req, res) => {
@@ -59,17 +96,16 @@ const userGetReservations = async (req, res) => {
 //api này đang có lỗi
 const staffGetReservations = async (req, res) => {
   try {
-    console.log(req.staff);
     const restaurantId = req.staff.restaurantId.toString();
     const reservations = await reservationModel.find({
-      restaurantId,
+      restaurantId,status:"pending"
     });
     console.log(reservations);
     console.log(typeof restaurantId);
     if (!reservations)
       return res.status(404).json({
         success: false,
-        message: messages.reservationNotFound,
+        message: messages.reservationNotFound
       });
 
     if (!isValidObjectId(restaurantId))
@@ -168,6 +204,31 @@ const staffAcceptReservation = async (req, res) => {
     return false;
   }
 };
+const rePending = async (req, res) => {
+  try {
+    const reservationId = req.params.reservationId;
+  const reservation = await reservationModel.findById(reservationId);
+  if (!reservation) {
+    console.log("Không tìm thấy đặt bàn.");
+    return res
+      .status(400)
+      .json({ success: false, message: messages.reservationNotFound });
+  }
+  reservation.status = "pending";
+  reservation.acceptedDate = null;
+  reservation.rejectedDate = null;
+  await reservation.save();
+
+    console.log("Đặt bàn đã được chấp nhận thành công.");
+    // res.status(201).json(reservation)
+    return res
+      .status(400)
+      .json({ success: true, message: messages.success, data: reservation });
+  } catch (error) {
+    console.error("Lỗi khi hoàn tác:", error);
+    return false;
+  }
+}
 
 // nhân viên hủy yêu cầu đặt bàn
 const staffCancelReservation = async (req, res) => {
@@ -216,15 +277,16 @@ const staffCancelReservation = async (req, res) => {
 };
 
 // nhân viên checkin cho khách
+const { Schema, default: mongoose } = require('mongoose');
+
 const staffCheckInReservation = async (req, res) => {
   try {
     const reservationId = req.params.reservationId;
     const tableIds = req.body.tableIds;
+    const menus = req.body.menus;
 
-    // Tìm đặt bàn dựa trên reservationId
     const reservation = await reservationModel.findById(reservationId);
 
-    // Kiểm tra xem đặt bàn có tồn tại không
     if (!reservation) {
       console.log("Không tìm thấy đặt bàn.");
       return res.status(400).json({
@@ -232,21 +294,21 @@ const staffCheckInReservation = async (req, res) => {
         message: messages.reservationNotFound,
       });
     }
-    // kiểm tra xem đã hủy chưa
+
     if (reservation.status === "rejected") {
       return res.status(400).json({
         success: false,
         message: "Đặt bàn đã được hủy trước đó.",
       });
     }
-    // kiểm tra xem đã xác nhận chưa
+
     if (reservation.status === "pending") {
       return res.status(400).json({
         success: false,
         message: "Đặt bàn chưa được xác nhận.",
       });
     }
-    // Kiểm tra xem đặt bàn đã được check-in trước đó hay chưa
+
     if (reservation.status === "checkIn") {
       console.log("Đặt bàn đã được check-in trước đó.");
       return res.status(400).json({
@@ -254,21 +316,30 @@ const staffCheckInReservation = async (req, res) => {
         message: messages.AvaiableCheckin,
       });
     }
+
     if (!tableIds || tableIds.length === 0) {
       console.log("Vui lòng chọn ít nhất một bàn ăn.");
-      return false;
+      return res.status(400).json({
+        success: false,
+        message: "Vui lòng chọn ít nhất một bàn ăn.",
+      });
     }
-    // Cập nhật trạng thái của đặt bàn thành "checkIn" và thời gian check-in
+
+    reservation.menus = menus;
+
+
     reservation.status = "checkIn";
     reservation.checkInDate = new Date();
     reservation.tables = tableIds;
-    // Lưu thay đổi vào cơ sở dữ liệu
+
+
     await reservation.save();
-    // Cập nhật trạng thái của các bàn ăn tương ứng với restaurantId
+
     await tableModel.updateMany(
       { _id: { $in: tableIds } },
       { status: "inuse" }
     );
+
     return res.status(200).json({
       success: true,
       message: messages.success,
@@ -281,6 +352,7 @@ const staffCheckInReservation = async (req, res) => {
     });
   }
 };
+
 
 // nhân viên checkout cho khách
 const staffCheckoutReservation = async (req, res) => {
@@ -340,4 +412,6 @@ module.exports = {
   staffCancelReservation,
   staffCheckInReservation,
   staffCheckoutReservation,
+  getAcceptReservation1,
+  rePending
 };

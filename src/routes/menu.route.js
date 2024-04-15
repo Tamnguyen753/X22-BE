@@ -6,7 +6,6 @@ const menuRoute = Router();
 
 // lấy danh sách menu
 menuRoute.get("/", getMenus);
-
 // tạo mới menu
 menuRoute.post("/", verifyToken, verifyManager, createMenu);
 
